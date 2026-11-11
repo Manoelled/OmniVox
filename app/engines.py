@@ -388,7 +388,7 @@ def get_engine_catalog() -> List[Dict[str, Any]]:
             "name": "Kokoro 82M",
             "repo": "hexgrad/kokoro",
             "badge": "Offline GPU/CPU · ~1s / min",
-            "description": "Fastest high-quality English model on your RTX 3060 Ti. Natural US/UK English voices with voice blending.",
+            "description": "Fastest high-quality English model on GPU or CPU. Natural US/UK English voices with voice blending.",
             "available": _has_module("kokoro"),
             "installed": kokoro_installed,
             "installed_size_mb": kokoro_mb,
