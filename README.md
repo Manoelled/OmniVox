@@ -1,6 +1,5 @@
 # OmniVox
 
-Made by Manoelle Diokno.
 
 OmniVox is a local, token-free English text-to-speech studio that unifies multiple open-source neural and ONNX TTS engines inside a single browser interface. Paste a script, pick an English voice, tune dramaticness and pacing, play/pause/skip/regenerate by sentence, and export MP3 or WAV audio on your own hardware.
 
