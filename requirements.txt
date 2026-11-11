@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+soundfile
+piper-tts
+edge-tts
+kokoro>=0.9.4
+kittenml
+chatterbox-tts

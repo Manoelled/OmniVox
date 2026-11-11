@@ -1,0 +1,18 @@
+# Python virtual environment & caches
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Environment files
+.env
+.env.*
+
+# Runtime generated audio, local voice models, and cloned upstream repos
+outputs/
+models/
+repos/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
