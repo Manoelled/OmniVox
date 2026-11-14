@@ -1,7 +1,7 @@
 # OmniVox
 
 
-OmniVox is a local, token-free English text-to-speech studio that unifies multiple open-source neural and ONNX TTS engines inside a single browser interface. Paste a script, pick an English voice, tune dramaticness and pacing, play/pause/skip/regenerate by sentence, and export MP3 or WAV audio on your own hardware.
+OmniVox is a local, token-free multilingual text-to-speech studio that unifies multiple open-source neural and ONNX TTS engines inside a single browser interface. Paste a script, pick a voice across multiple languages, tune dramaticness and pacing, play/pause/skip/regenerate by sentence, inspect sentence boundaries on the visual timeline, and export MP3 or WAV audio on your own hardware.
 
 ![OmniVox UI](samples/omnivox-ui.png)
 
@@ -13,16 +13,21 @@ OmniVox is a local, token-free English text-to-speech studio that unifies multip
 ## Features
 
 - **No API Keys or Paid Tokens:** Runs locally on CPU or NVIDIA CUDA GPU (with optional zero-GPU online Edge TTS).
-- **Live System and Voice Cache Status:** Shows which engines and English voices are already cached on disk alongside estimated download sizes before you generate.
+- **Multilingual Support:** High-quality synthesis across English (US/UK/AU), Spanish, French, German, Italian, Portuguese, Japanese, Chinese, Hindi, and more via Kokoro, Piper, and Edge TTS.
+- **Language Filter and Voice Search:** Instant language filter pills and real-time text search across all available voices and timbres.
+- **Visual Sentence Timeline and Phrase Fast-Forward:** Floating Spotify-style frosted-glass player with timeline scrubber divided into clickable sentence segments, -5s / +5s fast-forward, previous/next phrase skipping, and keyboard shortcuts (Space, Arrows, J/K).
+- **Sentence Breakdown and Transcript Search:** Jump to any sentence, filter dialogue with real-time text search, and regenerate single sentences with custom parameters without re-synthesizing the entire script.
+- **Generation Progress Bar:** Clean progress bar displaying live percentage, sentence counter, current text excerpt, and elapsed time during synthesis.
+- **Rich Acoustic Tooltips:** Descriptors on sliders (speed, exaggeration/dramaticness, CFG weight, noise scale, temperature, pitch) detailing their exact sonic behavior.
+- **Live System and Voice Cache Status:** Shows which engines and voices are already cached on disk alongside estimated download sizes before you generate.
 - **Cancel Active Generation:** Stop queued or multi-sentence synthesis cleanly mid-run.
 - **Engine-Specific Tuning and Dramaticness:**
-  - **Kokoro 82M (`hexgrad/kokoro`):** Fast English synthesis (~1s per minute of audio on a mid-range CUDA GPU), speaking speed, secondary voice blending, and pause pacing.
+  - **Kokoro 82M (`hexgrad/kokoro`):** Fast multilingual synthesis (~1s per minute of audio on a mid-range CUDA GPU), speaking speed, secondary voice blending, and pause pacing across English, Spanish, French, Italian, Portuguese, Japanese, Chinese, and Hindi.
   - **Chatterbox (`resemble-ai/chatterbox`):** Native Dramaticness (`exaggeration`) slider, CFG pacing control, vocal variety (`temperature`), and zero-shot voice cloning.
-  - **Chatterbox Turbo (`resemble-ai/chatterbox`):** Streamlined 350M English model with native paralinguistic tags (`[laugh]`, `[chuckle]`, `[sigh]`, `[gasp]`, `[cough]`).
-  - **Piper ONNX (`OHF-Voice/piper1-gpl`):** 100% offline CPU synthesis with speed and expressiveness (`noise_scale`) sliders.
+  - **Chatterbox Turbo (`resemble-ai/chatterbox`):** Streamlined 350M model with native paralinguistic tags (`[laugh]`, `[chuckle]`, `[sigh]`, `[gasp]`, `[cough]`).
+  - **Piper ONNX (`OHF-Voice/piper1-gpl`):** 100% offline CPU synthesis with speed and expressiveness (`noise_scale`) sliders across multiple languages.
   - **KittenTTS 0.8 & 2 (`KittenML/KittenTTS`):** Lightweight 80M ONNX CPU voices plus KittenTTS 2 character voices, emotion/event tags (`[joyful]`, `<laugh>`), and voice cloning.
-  - **Edge TTS (`travisvn/openai-edge-tts`):** Token-free online English voices with speed and pitch controls and zero GPU usage.
-- **Floating Player and Export:** Floating frosted-glass bottom dock with icon Play/Pause transport, `-10s` / `+10s`, Prev/Next Line skipping, single-line regeneration, auto-play toggle, and MP3/WAV export via `ffmpeg`.
+  - **Edge TTS (`travisvn/openai-edge-tts`):** Token-free online multilingual voices with speed and pitch controls and zero GPU usage.
 
 ## Project Structure
 

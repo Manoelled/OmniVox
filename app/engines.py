@@ -84,8 +84,8 @@ def get_system_info() -> Dict[str, Any]:
     }
 
 
-def split_text_chunks(text: str, max_chars: int = 260) -> List[str]:
-    """Split text into sentence-sized chunks suitable for neural TTS and sentence skipping."""
+def split_text_chunks(text: str, max_chars: int = 280) -> List[str]:
+    """Split text into sentence-sized chunks suitable for neural TTS and phrase skipping."""
     cleaned = re.sub(r"\r\n?", "\n", text).strip()
     if not cleaned:
         return []
@@ -94,19 +94,12 @@ def split_text_chunks(text: str, max_chars: int = 260) -> List[str]:
     chunks: List[str] = []
 
     for para in paragraphs:
-        # Split on sentence boundaries while keeping punctuation
-        sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9\"'\[(<])|(?<=[.!?])\s+$", para)
-        current = ""
+        # Split on sentence boundaries including multilingual punctuation (.!? and CJK 。！？)
+        sentences = [s.strip() for s in re.split(r"(?<=[.!?。！？])\s+", para) if s.strip()]
         for sent in sentences:
-            sent = sent.strip()
-            if not sent:
-                continue
             if len(sent) > max_chars:
-                if current:
-                    chunks.append(current)
-                    current = ""
-                # Sub-split overly long sentences on commas/semicolons
-                parts = re.split(r"(?<=[,;:])\s+", sent)
+                # Sub-split overly long sentences on commas/semicolons/cjk punctuation
+                parts = re.split(r"(?<=[,;:\uff0c\uff1b\u3001])\s*", sent)
                 sub = ""
                 for part in parts:
                     if sub and len(sub) + 1 + len(part) > max_chars:
@@ -116,13 +109,8 @@ def split_text_chunks(text: str, max_chars: int = 260) -> List[str]:
                         sub = f"{sub} {part}".strip() if sub else part
                 if sub:
                     chunks.append(sub)
-            elif current and len(current) + 1 + len(sent) > max_chars:
-                chunks.append(current)
-                current = sent
             else:
-                current = f"{current} {sent}".strip() if current else sent
-        if current:
-            chunks.append(current)
+                chunks.append(sent)
 
     return chunks
 
@@ -172,92 +160,209 @@ def convert_wav_to_mp3(wav_path: Path, mp3_path: Path, bitrate: str = "192k") ->
 
 
 # ---------------------------------------------------------------------------
-# Engine Catalog & Dynamic UI Schemas (English-focused, token-free)
+# Engine Catalog & Dynamic UI Schemas (Multilingual, Token-free)
 # ---------------------------------------------------------------------------
 
+def _kokoro_lang_for_voice(voice_id: str) -> str:
+    """Map Kokoro voice prefix to pipeline lang_code."""
+    prefix = voice_id[:2].lower()
+    mapping = {
+        "af": "a", "am": "a",
+        "bf": "b", "bm": "b",
+        "ef": "e", "em": "e",
+        "ff": "f", "fm": "f",
+        "hf": "h", "hm": "h",
+        "if": "i", "im": "i",
+        "pf": "p", "pm": "p",
+        "jf": "j", "jm": "j",
+        "zf": "z", "zm": "z",
+    }
+    return mapping.get(prefix, "a")
+
+
 KOKORO_VOICES = [
-    {"id": "af_heart", "label": "Heart (US Female - Warm, Natural)"},
-    {"id": "af_bella", "label": "Bella (US Female - Expressive)"},
-    {"id": "af_nicole", "label": "Nicole (US Female - Soft / ASMR)"},
-    {"id": "af_sarah", "label": "Sarah (US Female - Crisp Narrator)"},
-    {"id": "af_sky", "label": "Sky (US Female - Bright)"},
-    {"id": "af_nova", "label": "Nova (US Female - Clear)"},
-    {"id": "af_alloy", "label": "Alloy (US Female - Balanced)"},
-    {"id": "af_jessica", "label": "Jessica (US Female - Conversational)"},
-    {"id": "am_michael", "label": "Michael (US Male - Deep Narrator)"},
-    {"id": "am_adam", "label": "Adam (US Male - Classic)"},
-    {"id": "am_fenrir", "label": "Fenrir (US Male - Bold)"},
-    {"id": "am_eric", "label": "Eric (US Male - Friendly)"},
-    {"id": "am_liam", "label": "Liam (US Male - Young)"},
-    {"id": "am_onyx", "label": "Onyx (US Male - Rich)"},
-    {"id": "am_puck", "label": "Puck (US Male - Lively)"},
-    {"id": "bf_emma", "label": "Emma (UK Female - Refined)"},
-    {"id": "bf_isabella", "label": "Isabella (UK Female - Warm)"},
-    {"id": "bf_alice", "label": "Alice (UK Female - Clear)"},
-    {"id": "bf_lily", "label": "Lily (UK Female - Gentle)"},
-    {"id": "bm_george", "label": "George (UK Male - Classic)"},
-    {"id": "bm_lewis", "label": "Lewis (UK Male - Storytelling)"},
-    {"id": "bm_daniel", "label": "Daniel (UK Male - Broadcaster)"},
-    {"id": "bm_fable", "label": "Fable (UK Male - Theatrical)"},
+    # US English
+    {"id": "af_heart", "label": "Heart (US Female - Warm, Natural)", "lang": "en", "lang_name": "English"},
+    {"id": "af_bella", "label": "Bella (US Female - Expressive)", "lang": "en", "lang_name": "English"},
+    {"id": "af_nicole", "label": "Nicole (US Female - Soft / ASMR)", "lang": "en", "lang_name": "English"},
+    {"id": "af_sarah", "label": "Sarah (US Female - Crisp Narrator)", "lang": "en", "lang_name": "English"},
+    {"id": "af_sky", "label": "Sky (US Female - Bright)", "lang": "en", "lang_name": "English"},
+    {"id": "af_nova", "label": "Nova (US Female - Clear)", "lang": "en", "lang_name": "English"},
+    {"id": "af_alloy", "label": "Alloy (US Female - Balanced)", "lang": "en", "lang_name": "English"},
+    {"id": "af_jessica", "label": "Jessica (US Female - Conversational)", "lang": "en", "lang_name": "English"},
+    {"id": "am_michael", "label": "Michael (US Male - Deep Narrator)", "lang": "en", "lang_name": "English"},
+    {"id": "am_adam", "label": "Adam (US Male - Classic)", "lang": "en", "lang_name": "English"},
+    {"id": "am_fenrir", "label": "Fenrir (US Male - Bold)", "lang": "en", "lang_name": "English"},
+    {"id": "am_eric", "label": "Eric (US Male - Friendly)", "lang": "en", "lang_name": "English"},
+    {"id": "am_liam", "label": "Liam (US Male - Young)", "lang": "en", "lang_name": "English"},
+    {"id": "am_onyx", "label": "Onyx (US Male - Rich)", "lang": "en", "lang_name": "English"},
+    {"id": "am_puck", "label": "Puck (US Male - Lively)", "lang": "en", "lang_name": "English"},
+    # UK English
+    {"id": "bf_emma", "label": "Emma (UK Female - Refined)", "lang": "en", "lang_name": "English"},
+    {"id": "bf_isabella", "label": "Isabella (UK Female - Warm)", "lang": "en", "lang_name": "English"},
+    {"id": "bf_alice", "label": "Alice (UK Female - Clear)", "lang": "en", "lang_name": "English"},
+    {"id": "bf_lily", "label": "Lily (UK Female - Gentle)", "lang": "en", "lang_name": "English"},
+    {"id": "bm_george", "label": "George (UK Male - Classic)", "lang": "en", "lang_name": "English"},
+    {"id": "bm_lewis", "label": "Lewis (UK Male - Storytelling)", "lang": "en", "lang_name": "English"},
+    {"id": "bm_daniel", "label": "Daniel (UK Male - Broadcaster)", "lang": "en", "lang_name": "English"},
+    {"id": "bm_fable", "label": "Fable (UK Male - Theatrical)", "lang": "en", "lang_name": "English"},
+    # Spanish
+    {"id": "ef_dora", "label": "Dora (Spanish Female - Warm)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "em_alex", "label": "Alex (Spanish Male - Dynamic)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "em_santa", "label": "Santa (Spanish Male - Deep)", "lang": "es", "lang_name": "Spanish"},
+    # French
+    {"id": "ff_siwis", "label": "Siwis (French Female - Refined)", "lang": "fr", "lang_name": "French"},
+    # Hindi
+    {"id": "hf_alpha", "label": "Alpha (Hindi Female - Clear)", "lang": "hi", "lang_name": "Hindi"},
+    {"id": "hf_beta", "label": "Beta (Hindi Female - Warm)", "lang": "hi", "lang_name": "Hindi"},
+    {"id": "hm_omega", "label": "Omega (Hindi Male - Deep)", "lang": "hi", "lang_name": "Hindi"},
+    {"id": "hm_psi", "label": "Psi (Hindi Male - Dynamic)", "lang": "hi", "lang_name": "Hindi"},
+    # Italian
+    {"id": "if_sara", "label": "Sara (Italian Female - Melodic)", "lang": "it", "lang_name": "Italian"},
+    {"id": "im_nicola", "label": "Nicola (Italian Male - Expressive)", "lang": "it", "lang_name": "Italian"},
+    # Portuguese (Brazil)
+    {"id": "pf_dora", "label": "Dora (Portuguese Female - Warm)", "lang": "pt", "lang_name": "Portuguese"},
+    {"id": "pm_alex", "label": "Alex (Portuguese Male - Conversational)", "lang": "pt", "lang_name": "Portuguese"},
+    {"id": "pm_santa", "label": "Santa (Portuguese Male - Deep)", "lang": "pt", "lang_name": "Portuguese"},
+    # Japanese
+    {"id": "jf_alpha", "label": "Alpha (Japanese Female - Bright)", "lang": "ja", "lang_name": "Japanese"},
+    {"id": "jf_gongitsune", "label": "Gongitsune (Japanese Female - Storyteller)", "lang": "ja", "lang_name": "Japanese"},
+    {"id": "jf_nezumi", "label": "Nezumi (Japanese Female - Crisp)", "lang": "ja", "lang_name": "Japanese"},
+    {"id": "jm_kumo", "label": "Kumo (Japanese Male - Calm)", "lang": "ja", "lang_name": "Japanese"},
+    # Chinese (Mandarin)
+    {"id": "zf_xiaobei", "label": "Xiaobei (Chinese Female - Bright)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zf_xiaoni", "label": "Xiaoni (Chinese Female - Sweet)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zf_xiaoxiao", "label": "Xiaoxiao (Chinese Female - Warm Narrator)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zm_yunjian", "label": "Yunjian (Chinese Male - Broadcaster)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zm_yunxi", "label": "Yunxi (Chinese Male - Storyteller)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zm_yunyang", "label": "Yunyang (Chinese Male - Clear)", "lang": "zh", "lang_name": "Chinese"},
 ]
 
 PIPER_VOICES = [
-    {"id": "en_US-lessac-medium", "label": "Lessac (US - Balanced Natural)"},
-    {"id": "en_US-amy-medium", "label": "Amy (US Female - Clear)"},
-    {"id": "en_US-ryan-high", "label": "Ryan (US Male - High Quality)"},
-    {"id": "en_US-libritts_r-medium", "label": "LibriTTS (US - Audiobook)"},
-    {"id": "en_US-joe-medium", "label": "Joe (US Male - Conversational)"},
-    {"id": "en_GB-alba-medium", "label": "Alba (UK/Scottish Female)"},
-    {"id": "en_GB-cori-high", "label": "Cori (UK Female - High Quality)"},
-    {"id": "en_GB-northern_english_male-medium", "label": "Northern Male (UK)"},
-    {"id": "en_GB-alan-medium", "label": "Alan (UK Male - Crisp)"},
+    # English
+    {"id": "en_US-lessac-medium", "label": "Lessac (US - Balanced Natural)", "lang": "en", "lang_name": "English"},
+    {"id": "en_US-amy-medium", "label": "Amy (US Female - Clear)", "lang": "en", "lang_name": "English"},
+    {"id": "en_US-ryan-high", "label": "Ryan (US Male - High Quality)", "lang": "en", "lang_name": "English"},
+    {"id": "en_US-libritts_r-medium", "label": "LibriTTS (US - Audiobook)", "lang": "en", "lang_name": "English"},
+    {"id": "en_US-joe-medium", "label": "Joe (US Male - Conversational)", "lang": "en", "lang_name": "English"},
+    {"id": "en_GB-alba-medium", "label": "Alba (UK/Scottish Female)", "lang": "en", "lang_name": "English"},
+    {"id": "en_GB-cori-high", "label": "Cori (UK Female - High Quality)", "lang": "en", "lang_name": "English"},
+    {"id": "en_GB-northern_english_male-medium", "label": "Northern Male (UK)", "lang": "en", "lang_name": "English"},
+    {"id": "en_GB-alan-medium", "label": "Alan (UK Male - Crisp)", "lang": "en", "lang_name": "English"},
+    # Spanish
+    {"id": "es_ES-davefx-medium", "label": "Davefx (Spain Male - Natural)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "es_ES-sharvard-medium", "label": "Sharvard (Spain Female - Clear)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "es_MX-ald-medium", "label": "Ald (Mexico Male - Smooth)", "lang": "es", "lang_name": "Spanish"},
+    # French
+    {"id": "fr_FR-siwis-medium", "label": "Siwis (France Female - Natural)", "lang": "fr", "lang_name": "French"},
+    {"id": "fr_FR-upmc-medium", "label": "UPMC (France Male - Clear)", "lang": "fr", "lang_name": "French"},
+    # German
+    {"id": "de_DE-thorsten-medium", "label": "Thorsten (Germany Male - Storyteller)", "lang": "de", "lang_name": "German"},
+    {"id": "de_DE-eva_k-medium", "label": "Eva (Germany Female - Crisp)", "lang": "de", "lang_name": "German"},
+    # Italian
+    {"id": "it_IT-riccardo-medium", "label": "Riccardo (Italy Male - Expressive)", "lang": "it", "lang_name": "Italian"},
+    {"id": "it_IT-paola-medium", "label": "Paola (Italy Female - Warm)", "lang": "it", "lang_name": "Italian"},
+    # Portuguese (Brazil)
+    {"id": "pt_BR-faber-medium", "label": "Faber (Brazil Male - Conversational)", "lang": "pt", "lang_name": "Portuguese"},
+    # Dutch
+    {"id": "nl_BE-nathalie-medium", "label": "Nathalie (Belgium/Dutch Female)", "lang": "nl", "lang_name": "Dutch"},
+    # Polish
+    {"id": "pl_PL-darkman-medium", "label": "Darkman (Poland Male)", "lang": "pl", "lang_name": "Polish"},
+    # Russian
+    {"id": "ru_RU-dmitri-medium", "label": "Dmitri (Russia Male)", "lang": "ru", "lang_name": "Russian"},
 ]
 
 KITTEN_ONNX_VOICES = [
-    {"id": "Bella", "label": "Bella (Female)"},
-    {"id": "Jasper", "label": "Jasper (Male)"},
-    {"id": "Luna", "label": "Luna (Female)"},
-    {"id": "Bruno", "label": "Bruno (Male)"},
-    {"id": "Rosie", "label": "Rosie (Female)"},
-    {"id": "Hugo", "label": "Hugo (Male)"},
-    {"id": "Kiki", "label": "Kiki (Female)"},
-    {"id": "Leo", "label": "Leo (Male)"},
+    {"id": "Bella", "label": "Bella (Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Jasper", "label": "Jasper (Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Luna", "label": "Luna (Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Bruno", "label": "Bruno (Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Rosie", "label": "Rosie (Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Hugo", "label": "Hugo (Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Kiki", "label": "Kiki (Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Leo", "label": "Leo (Male)", "lang": "en", "lang_name": "English"},
 ]
 
 KITTEN2_VOICES = [
-    {"id": "Laurence", "label": "Laurence (Dramatic Stage Actor, Male)"},
-    {"id": "Victoria", "label": "Victoria (Regal Narrator, Female)"},
-    {"id": "Martha", "label": "Martha (Weathered Radio Journalist, Female)"},
-    {"id": "Herbert", "label": "Herbert (Wise Elderly Professor, Male)"},
-    {"id": "Maeve", "label": "Maeve (Warm Storyteller, Female)"},
-    {"id": "Marcus", "label": "Marcus (Smooth Radio DJ, Male)"},
-    {"id": "Bella", "label": "Bella (Clear Female)"},
-    {"id": "Jasper", "label": "Jasper (Clear Male)"},
-    {"id": "Luna", "label": "Luna (Soft Female)"},
-    {"id": "Bruno", "label": "Bruno (Grounded Male)"},
-    {"id": "Kiki", "label": "Kiki (Bright Female)"},
-    {"id": "Leo", "label": "Leo (Energetic Male)"},
-    {"id": "Victor", "label": "Victor (Controlled Fury, Male)"},
-    {"id": "Raven", "label": "Raven (Intense Young, Female)"},
-    {"id": "Sable", "label": "Sable (Hushed Conspirator, Female)"},
-    {"id": "Walter", "label": "Walter (Warm Grandfather, Male)"},
-    {"id": "Eleanor", "label": "Eleanor (Somber Historian, Female)"},
-    {"id": "Dante", "label": "Dante (Playful Smooth, Male)"},
-    {"id": "Claire", "label": "Claire (Playful Professional, Female)"},
-    {"id": "clone_uploaded", "label": "Use Uploaded Reference Clip (Voice Clone)"},
+    {"id": "Laurence", "label": "Laurence (Dramatic Stage Actor, Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Victoria", "label": "Victoria (Regal Narrator, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Martha", "label": "Martha (Weathered Radio Journalist, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Herbert", "label": "Herbert (Wise Elderly Professor, Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Maeve", "label": "Maeve (Warm Storyteller, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Marcus", "label": "Marcus (Smooth Radio DJ, Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Bella", "label": "Bella (Clear Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Jasper", "label": "Jasper (Clear Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Luna", "label": "Luna (Soft Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Bruno", "label": "Bruno (Grounded Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Kiki", "label": "Kiki (Bright Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Leo", "label": "Leo (Energetic Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Victor", "label": "Victor (Controlled Fury, Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Raven", "label": "Raven (Intense Young, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Sable", "label": "Sable (Hushed Conspirator, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Walter", "label": "Walter (Warm Grandfather, Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Eleanor", "label": "Eleanor (Somber Historian, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "Dante", "label": "Dante (Playful Smooth, Male)", "lang": "en", "lang_name": "English"},
+    {"id": "Claire", "label": "Claire (Playful Professional, Female)", "lang": "en", "lang_name": "English"},
+    {"id": "clone_uploaded", "label": "Use Uploaded Reference Clip (Voice Clone)", "lang": "multilingual", "lang_name": "Multilingual Clone"},
 ]
 
 EDGE_VOICES = [
-    {"id": "en-US-AriaNeural", "label": "Aria (US Female - Expressive)"},
-    {"id": "en-US-GuyNeural", "label": "Guy (US Male - Newscast/Warm)"},
-    {"id": "en-US-JennyNeural", "label": "Jenny (US Female - Natural)"},
-    {"id": "en-US-ChristopherNeural", "label": "Christopher (US Male - Reliable)"},
-    {"id": "en-US-AvaMultilingualNeural", "label": "Ava (US Female - Rich)"},
-    {"id": "en-US-AndrewMultilingualNeural", "label": "Andrew (US Male - Smooth)"},
-    {"id": "en-GB-SoniaNeural", "label": "Sonia (UK Female - Clear)"},
-    {"id": "en-GB-RyanNeural", "label": "Ryan (UK Male - Crisp)"},
-    {"id": "en-AU-NatashaNeural", "label": "Natasha (AU Female)"},
-    {"id": "en-AU-WilliamNeural", "label": "William (AU Male)"},
+    # English
+    {"id": "en-US-AriaNeural", "label": "Aria (US Female - Expressive)", "lang": "en", "lang_name": "English"},
+    {"id": "en-US-GuyNeural", "label": "Guy (US Male - Newscast / Warm)", "lang": "en", "lang_name": "English"},
+    {"id": "en-US-JennyNeural", "label": "Jenny (US Female - Natural)", "lang": "en", "lang_name": "English"},
+    {"id": "en-US-ChristopherNeural", "label": "Christopher (US Male - Reliable)", "lang": "en", "lang_name": "English"},
+    {"id": "en-US-AvaMultilingualNeural", "label": "Ava (US Female - Multilingual Rich)", "lang": "en", "lang_name": "English"},
+    {"id": "en-US-AndrewMultilingualNeural", "label": "Andrew (US Male - Multilingual Smooth)", "lang": "en", "lang_name": "English"},
+    {"id": "en-GB-SoniaNeural", "label": "Sonia (UK Female - Clear)", "lang": "en", "lang_name": "English"},
+    {"id": "en-GB-RyanNeural", "label": "Ryan (UK Male - Crisp)", "lang": "en", "lang_name": "English"},
+    {"id": "en-AU-NatashaNeural", "label": "Natasha (AU Female)", "lang": "en", "lang_name": "English"},
+    {"id": "en-AU-WilliamNeural", "label": "William (AU Male)", "lang": "en", "lang_name": "English"},
+    # Spanish
+    {"id": "es-ES-ElviraNeural", "label": "Elvira (Spain Female - Expressive)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "es-ES-AlvaroNeural", "label": "Alvaro (Spain Male - Confident)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "es-MX-DaliaNeural", "label": "Dalia (Mexico Female - Warm)", "lang": "es", "lang_name": "Spanish"},
+    {"id": "es-MX-JorgeNeural", "label": "Jorge (Mexico Male - Conversational)", "lang": "es", "lang_name": "Spanish"},
+    # French
+    {"id": "fr-FR-DeniseNeural", "label": "Denise (France Female - Refined)", "lang": "fr", "lang_name": "French"},
+    {"id": "fr-FR-HenriNeural", "label": "Henri (France Male - Deep)", "lang": "fr", "lang_name": "French"},
+    {"id": "fr-CA-SylvieNeural", "label": "Sylvie (Canada French Female)", "lang": "fr", "lang_name": "French"},
+    # German
+    {"id": "de-DE-KatjaNeural", "label": "Katja (Germany Female - Clear)", "lang": "de", "lang_name": "German"},
+    {"id": "de-DE-ConradNeural", "label": "Conrad (Germany Male - Grounded)", "lang": "de", "lang_name": "German"},
+    # Italian
+    {"id": "it-IT-ElsaNeural", "label": "Elsa (Italy Female - Melodic)", "lang": "it", "lang_name": "Italian"},
+    {"id": "it-IT-DiegoNeural", "label": "Diego (Italy Male - Expressive)", "lang": "it", "lang_name": "Italian"},
+    # Portuguese
+    {"id": "pt-BR-FranciscaNeural", "label": "Francisca (Brazil Female - Natural)", "lang": "pt", "lang_name": "Portuguese"},
+    {"id": "pt-BR-AntonioNeural", "label": "Antonio (Brazil Male - Warm)", "lang": "pt", "lang_name": "Portuguese"},
+    {"id": "pt-PT-RaquelNeural", "label": "Raquel (Portugal Female)", "lang": "pt", "lang_name": "Portuguese"},
+    # Japanese
+    {"id": "ja-JP-NanamiNeural", "label": "Nanami (Japan Female - Bright)", "lang": "ja", "lang_name": "Japanese"},
+    {"id": "ja-JP-KeitaNeural", "label": "Keita (Japan Male - Clear)", "lang": "ja", "lang_name": "Japanese"},
+    # Chinese (Mandarin)
+    {"id": "zh-CN-XiaoxiaoNeural", "label": "Xiaoxiao (China Female - Expressive Narrator)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zh-CN-YunxiNeural", "label": "Yunxi (China Male - Warm)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zh-CN-YunjianNeural", "label": "Yunjian (China Male - Storytelling)", "lang": "zh", "lang_name": "Chinese"},
+    {"id": "zh-TW-HsiaoChenNeural", "label": "HsiaoChen (Taiwan Female)", "lang": "zh", "lang_name": "Chinese"},
+    # Korean
+    {"id": "ko-KR-SunHiNeural", "label": "SunHi (Korea Female - Expressive)", "lang": "ko", "lang_name": "Korean"},
+    {"id": "ko-KR-InJoonNeural", "label": "InJoon (Korea Male - Natural)", "lang": "ko", "lang_name": "Korean"},
+    # Hindi
+    {"id": "hi-IN-SwaraNeural", "label": "Swara (India Female - Warm)", "lang": "hi", "lang_name": "Hindi"},
+    {"id": "hi-IN-MadhurNeural", "label": "Madhur (India Male - Confident)", "lang": "hi", "lang_name": "Hindi"},
+    # Dutch
+    {"id": "nl-NL-ColetteNeural", "label": "Colette (Netherlands Female)", "lang": "nl", "lang_name": "Dutch"},
+    {"id": "nl-NL-MaartenNeural", "label": "Maarten (Netherlands Male)", "lang": "nl", "lang_name": "Dutch"},
+    # Polish
+    {"id": "pl-PL-ZofiaNeural", "label": "Zofia (Poland Female)", "lang": "pl", "lang_name": "Polish"},
+    {"id": "pl-PL-MarekNeural", "label": "Marek (Poland Male)", "lang": "pl", "lang_name": "Polish"},
+    # Russian
+    {"id": "ru-RU-SvetlanaNeural", "label": "Svetlana (Russia Female)", "lang": "ru", "lang_name": "Russian"},
+    {"id": "ru-RU-DmitryNeural", "label": "Dmitry (Russia Male)", "lang": "ru", "lang_name": "Russian"},
+    # Arabic
+    {"id": "ar-SA-ZariyahNeural", "label": "Zariyah (Saudi Female)", "lang": "ar", "lang_name": "Arabic"},
+    {"id": "ar-SA-HamedNeural", "label": "Hamed (Saudi Male)", "lang": "ar", "lang_name": "Arabic"},
 ]
 
 
@@ -387,8 +492,8 @@ def get_engine_catalog() -> List[Dict[str, Any]]:
             "id": "kokoro",
             "name": "Kokoro 82M",
             "repo": "hexgrad/kokoro",
-            "badge": "Offline GPU/CPU · ~1s / min",
-            "description": "Fastest high-quality English model on GPU or CPU. Natural US/UK English voices with voice blending.",
+            "badge": "Offline GPU/CPU · Multilingual",
+            "description": "Fastest high-quality multilingual model on GPU or CPU. Natural voices across English, Spanish, French, Italian, Portuguese, Japanese, Chinese, and Hindi with voice blending.",
             "available": _has_module("kokoro"),
             "installed": kokoro_installed,
             "installed_size_mb": kokoro_mb,
@@ -542,8 +647,8 @@ def get_engine_catalog() -> List[Dict[str, Any]]:
             "id": "piper",
             "name": "Piper ONNX",
             "repo": "OHF-Voice/piper1-gpl",
-            "badge": "100% Offline CPU · Instant",
-            "description": "Ultra-fast local ONNX English voices. Zero GPU required; downloads selected voice (~60–115 MB) on first run.",
+            "badge": "100% Offline CPU · Multilingual",
+            "description": "Ultra-fast local ONNX voices across multiple languages. Zero GPU required; downloads selected voice (~60–115 MB) on first run.",
             "available": _has_module("piper"),
             "installed": piper_installed_count > 0,
             "installed_size_mb": piper_mb,
@@ -649,7 +754,7 @@ def get_engine_catalog() -> List[Dict[str, Any]]:
             "name": "Edge TTS (No API Token)",
             "repo": "travisvn/openai-edge-tts",
             "badge": "Online · 0 MB Local",
-            "description": "Microsoft Edge neural English voices without any API token or GPU usage (requires internet connection).",
+            "description": "Microsoft Edge neural multilingual voices without any API token or GPU usage (requires internet connection).",
             "available": _has_module("edge_tts"),
             "installed": True,
             "installed_size_mb": 0.0,
@@ -814,7 +919,7 @@ class EngineManager:
         if engine_id == "kokoro":
             import torch
 
-            lang_code = "b" if voice.startswith("b") else "a"
+            lang_code = _kokoro_lang_for_voice(voice)
             pipe = self._get_kokoro_pipeline(lang_code)
             speed = float(params.get("speed", 1.0))
             dramaticness = float(params.get("dramaticness", 0.35))
@@ -824,7 +929,7 @@ class EngineManager:
             voice_arg: Any = voice
             if blend_voice and blend_voice != "none" and blend_voice != voice and blend_ratio > 0:
                 p1 = pipe.load_single_voice(voice)
-                p2_pipe = self._get_kokoro_pipeline("b" if blend_voice.startswith("b") else "a")
+                p2_pipe = self._get_kokoro_pipeline(_kokoro_lang_for_voice(blend_voice))
                 p2 = p2_pipe.load_single_voice(blend_voice)
                 voice_arg = ((1.0 - blend_ratio) * p1 + blend_ratio * p2).to(dtype=torch.float32)
 
@@ -836,7 +941,7 @@ class EngineManager:
             merged = np.concatenate(parts) if parts else np.zeros(2400, dtype=np.float32)
 
             # Apply dramatic pause tail if dramaticness > 0.35
-            if dramaticness > 0.35 and text.rstrip().endswith(("!", "?", "...", "—")):
+            if dramaticness > 0.35 and text.rstrip().endswith(("!", "?", "...", " - ")):
                 extra_sil = int(24000 * (dramaticness - 0.35) * 0.45)
                 merged = np.concatenate([merged, np.zeros(extra_sil, dtype=np.float32)])
             return normalize_peak(merged), 24000
@@ -977,7 +1082,7 @@ class EngineManager:
         """Synthesize full readout chunk-by-chunk, stitch WAV + MP3, and track chunk timestamps."""
         chunks_text = split_text_chunks(text)
         if not chunks_text:
-            raise ValueError("Please enter some English text to synthesize.")
+            raise ValueError("Please enter some text to synthesize.")
 
         t0 = time.perf_counter()
         target_sr = 24000

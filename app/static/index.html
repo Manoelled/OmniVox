@@ -107,14 +107,14 @@
     main {
       max-width: 1260px;
       margin: 0 auto;
-      padding: 24px 28px 156px;
+      padding: 24px 28px 180px;
       display: grid;
       grid-template-columns: 1.15fr 1fr;
       gap: 20px;
     }
 
     @media (max-width: 980px) {
-      main { grid-template-columns: 1fr; padding: 16px 16px 196px; }
+      main { grid-template-columns: 1fr; padding: 16px 16px 210px; }
       header { padding: 14px 16px; }
     }
 
@@ -157,12 +157,13 @@
       color: var(--ink-secondary);
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 5px 12px;
+      padding: 5px 11px;
       font-family: inherit;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .seg-btn:hover {
@@ -172,7 +173,7 @@
 
     textarea {
       width: 100%;
-      min-height: 270px;
+      min-height: 250px;
       resize: vertical;
       background: var(--surface);
       color: var(--ink);
@@ -228,22 +229,23 @@
       margin-bottom: 6px;
     }
 
-    select, input[type="file"] {
+    select, input[type="file"], .search-input {
       width: 100%;
       background: var(--surface);
       color: var(--ink);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 10px 12px;
+      padding: 9px 12px;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 500;
       outline: none;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    select:focus {
+    select:focus, .search-input:focus {
       border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.05);
     }
 
     /* Systems Status & Size Preview Matrix */
@@ -269,7 +271,7 @@
     }
 
     .systems-list {
-      max-height: 210px;
+      max-height: 190px;
       overflow-y: auto;
     }
 
@@ -318,19 +320,51 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
-      padding: 9px 12px;
+      padding: 8px 12px;
       background: var(--surface-muted);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--ink-secondary);
       font-variant-numeric: tabular-nums;
     }
 
     .engine-desc {
-      font-size: 0.8rem;
+      font-size: 0.79rem;
       color: var(--ink-secondary);
       line-height: 1.45;
+    }
+
+    /* Multilingual Filter Bar */
+    .lang-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .lang-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink-secondary);
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+
+    .lang-pill:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .lang-pill.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #ffffff;
     }
 
     /* Sliders & Controls */
@@ -352,7 +386,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
-      font-size: 0.82rem;
+      font-size: 0.81rem;
       font-weight: 600;
       color: var(--ink);
     }
@@ -377,8 +411,8 @@
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
       background: var(--ink);
       border: 2px solid #ffffff;
@@ -393,7 +427,7 @@
 
     .control-hint {
       margin-top: 5px;
-      font-size: 0.73rem;
+      font-size: 0.72rem;
       color: var(--ink-muted);
       line-height: 1.35;
     }
@@ -409,7 +443,7 @@
     }
     .clone-box.visible { display: flex; }
 
-    /* iOS Switch */
+    /* Action Row & Switches */
     .action-row {
       display: flex;
       flex-wrap: wrap;
@@ -423,7 +457,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      font-size: 0.83rem;
+      font-size: 0.82rem;
       font-weight: 500;
       color: var(--ink);
       cursor: pointer;
@@ -432,8 +466,8 @@
 
     .ios-switch {
       position: relative;
-      width: 42px;
-      height: 24px;
+      width: 40px;
+      height: 22px;
       appearance: none;
       -webkit-appearance: none;
       background: rgba(0, 0, 0, 0.18);
@@ -448,8 +482,8 @@
       position: absolute;
       top: 2px;
       left: 2px;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: #ffffff;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
@@ -464,15 +498,15 @@
       transform: translateX(18px);
     }
 
-    /* Decisive B&W Buttons */
+    /* Buttons */
     .btn {
       font-family: inherit;
       border: 1px solid var(--border-strong);
       background: var(--surface);
       color: var(--ink);
       border-radius: 999px;
-      padding: 9px 15px;
-      font-size: 0.83rem;
+      padding: 8px 14px;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -497,8 +531,8 @@
       background: var(--ink);
       border-color: var(--ink);
       color: #ffffff;
-      padding: 11px 22px;
-      font-size: 0.88rem;
+      padding: 10px 20px;
+      font-size: 0.86rem;
     }
 
     .btn.primary:hover:not(:disabled) {
@@ -506,11 +540,59 @@
       border-color: #242426;
     }
 
+    /* Generation Progress Bar (Zero Micrographics, Pure Functional) */
+    .progress-box {
+      display: none;
+      flex-direction: column;
+      gap: 7px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .progress-box.visible { display: flex; }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.77rem;
+      font-weight: 600;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--ink);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .status-bar {
       display: none;
       padding: 10px 13px;
       border-radius: var(--radius-sm);
-      font-size: 0.82rem;
+      font-size: 0.81rem;
       font-weight: 500;
       background: var(--surface-muted);
       border: 1px solid var(--border);
@@ -529,6 +611,70 @@
       grid-column: 1 / -1;
     }
 
+    .transcript-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .chunks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 310px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .chunk-row {
+      display: grid;
+      grid-template-columns: 50px 80px 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 9px 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .chunk-row:hover {
+      border-color: var(--border-strong);
+    }
+
+    .chunk-row.active {
+      border-color: var(--ink);
+      background: rgba(10, 10, 10, 0.04);
+      box-shadow: inset 3px 0 0 var(--ink);
+    }
+
+    .chunk-num {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chunk-time {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chunk-text {
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .chunk-btn {
+      padding: 4px 10px;
+      font-size: 0.72rem;
+    }
+
     /* Spotify-style Floating Frosted Glass Footer Player */
     .floating-player {
       position: fixed;
@@ -537,20 +683,20 @@
       transform: translateX(-50%);
       width: min(1204px, calc(100% - 32px));
       z-index: 40;
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
-      border: 1px solid rgba(0, 0, 0, 0.11);
+      border: 1px solid rgba(0, 0, 0, 0.12);
       border-radius: 22px;
       padding: 12px 20px;
       box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12), 0 2px 10px rgba(0, 0, 0, 0.05);
       display: grid;
-      grid-template-columns: 0.9fr 1.4fr 1.2fr;
+      grid-template-columns: 1fr 1.6fr 1.1fr;
       align-items: center;
       gap: 16px;
     }
 
-    @media (max-width: 920px) {
+    @media (max-width: 960px) {
       .floating-player {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -591,7 +737,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       width: 100%;
     }
 
@@ -602,30 +748,31 @@
       gap: 8px;
     }
 
-    .icon-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
+    .transport-btn {
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 999px;
       border: 1px solid transparent;
       background: transparent;
       color: var(--ink);
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 3px;
       cursor: pointer;
       transition: background 0.14s ease, border-color 0.14s ease;
-      padding: 0;
       font-family: inherit;
       font-size: 0.74rem;
       font-weight: 700;
+      font-variant-numeric: tabular-nums;
     }
 
-    .icon-btn:hover:not(:disabled) {
+    .transport-btn:hover:not(:disabled) {
       background: rgba(0, 0, 0, 0.06);
       border-color: var(--border);
     }
 
-    .icon-btn:disabled {
+    .transport-btn:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
@@ -656,7 +803,41 @@
       box-shadow: none;
     }
 
-    .scrubber-wrap {
+    /* Scrubber & Phrase Segments Timeline */
+    .timeline-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .phrase-timeline {
+      width: 100%;
+      height: 5px;
+      display: flex;
+      gap: 2px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.07);
+    }
+
+    .phrase-segment {
+      height: 100%;
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 1px;
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+    .phrase-segment:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .phrase-segment.active {
+      background: var(--ink);
+    }
+
+    .scrubber-row {
       width: 100%;
       display: flex;
       align-items: center;
@@ -682,58 +863,8 @@
     }
 
     .player-actions .btn {
-      padding: 7px 11px;
-      font-size: 0.76rem;
-    }
-
-    .chunks-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 290px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .chunk-row {
-      display: grid;
-      grid-template-columns: 52px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 13px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: all 0.12s ease;
-    }
-
-    .chunk-row:hover {
-      border-color: var(--border-strong);
-    }
-
-    .chunk-row.active {
-      border-color: var(--ink);
-      background: rgba(10, 10, 10, 0.04);
-      box-shadow: inset 3px 0 0 var(--ink);
-    }
-
-    .chunk-time {
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--ink-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .chunk-text {
-      font-size: 0.86rem;
-      line-height: 1.45;
-      color: var(--ink);
-    }
-
-    .chunk-regen {
-      padding: 5px 11px;
-      font-size: 0.74rem;
+      padding: 6px 11px;
+      font-size: 0.75rem;
     }
   </style>
 </head>
@@ -754,13 +885,18 @@
       <div class="card-header">
         <span class="card-title">Script</span>
         <div class="samples">
-          <button class="seg-btn" data-sample="benchmark">1-Min Benchmark</button>
-          <button class="seg-btn" data-sample="dramatic">Dramatic Monologue</button>
-          <button class="seg-btn" data-sample="tags">Expressive Tags</button>
+          <button class="seg-btn" data-sample="benchmark" title="1-minute English test covering natural transitions">Benchmark (EN)</button>
+          <button class="seg-btn" data-sample="dramatic" title="High-contrast narrative with dramatic suspense">Monologue (EN)</button>
+          <button class="seg-btn" data-sample="tags" title="Paralinguistic tags like [laugh] and [sigh]">Tags (EN)</button>
+          <button class="seg-btn" data-sample="spanish" title="Spanish language narration test">Español (ES)</button>
+          <button class="seg-btn" data-sample="french" title="French language narration test">Français (FR)</button>
+          <button class="seg-btn" data-sample="german" title="German language narration test">Deutsch (DE)</button>
+          <button class="seg-btn" data-sample="japanese" title="Japanese language narration test">日本語 (JA)</button>
+          <button class="seg-btn" data-sample="chinese" title="Mandarin Chinese narration test">中文 (ZH)</button>
         </div>
       </div>
 
-      <textarea id="scriptInput" placeholder="Paste or type your English readout script..."></textarea>
+      <textarea id="scriptInput" placeholder="Paste or type your readout script in any supported language..."></textarea>
 
       <div class="tag-bar" id="tagBar">
         <span>Expression tags:</span>
@@ -768,17 +904,29 @@
 
       <div class="meta-row">
         <span id="wordStats">0 words · ~0:00 readout</span>
-        <span>Chunked by sentence for GPU efficiency &amp; line skipping</span>
+        <span title="Each sentence is synthesized as an independent chunk for instant line jumping, per-line regeneration, and zero VRAM overflow.">Chunked by sentence for GPU efficiency &amp; phrase navigation</span>
+      </div>
+
+      <!-- Clean Generation Progress Box -->
+      <div class="progress-box" id="progressBox">
+        <div class="progress-header">
+          <span id="progressStep">Initializing generation...</span>
+          <span id="progressStats">0% · 0s elapsed</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Starting engine pipeline...</div>
       </div>
 
       <div class="action-row">
-        <label class="ios-switch-wrap">
+        <label class="ios-switch-wrap" title="Automatically start playback through the floating player once generation finishes.">
           <input type="checkbox" class="ios-switch" id="autoPlayToggle" checked />
           Auto-play when ready
         </label>
         <div style="display:flex; gap:8px; align-items:center;">
-          <button class="btn" id="cancelBtn" style="display:none;">Cancel</button>
-          <button class="btn primary" id="generateBtn">Generate Readout</button>
+          <button class="btn" id="cancelBtn" style="display:none;" title="Stop synthesis gracefully after the current sentence finishes.">Cancel</button>
+          <button class="btn primary" id="generateBtn" title="Synthesize all sentences in the script using the selected engine and voice.">Generate Readout</button>
         </div>
       </div>
 
@@ -789,7 +937,7 @@
     <section class="card">
       <div class="card-header">
         <span class="card-title">System, Voice &amp; Tuning</span>
-        <span class="pill" id="repoBadge">—</span>
+        <span class="pill" id="repoBadge"> - </span>
       </div>
 
       <div class="systems-box">
@@ -802,27 +950,46 @@
 
       <div class="engine-desc" id="engineDesc">Loading systems...</div>
 
+      <!-- Multilingual Voice Selection & Search -->
       <div>
         <label class="field-label" for="voiceSelect">
-          <span>English Voice</span>
+          <span>Voice &amp; Language</span>
           <span id="voiceCountLabel"></span>
         </label>
+        
+        <!-- Language Filter Pills -->
+        <div class="lang-filter-bar" id="langFilterBar">
+          <button class="lang-pill active" data-lang="all">All</button>
+          <button class="lang-pill" data-lang="en">English</button>
+          <button class="lang-pill" data-lang="es">Spanish</button>
+          <button class="lang-pill" data-lang="fr">French</button>
+          <button class="lang-pill" data-lang="de">German</button>
+          <button class="lang-pill" data-lang="it">Italian</button>
+          <button class="lang-pill" data-lang="pt">Portuguese</button>
+          <button class="lang-pill" data-lang="ja">Japanese</button>
+          <button class="lang-pill" data-lang="zh">Chinese</button>
+          <button class="lang-pill" data-lang="other">Other</button>
+        </div>
+
+        <input type="text" class="search-input" id="voiceSearchInput" placeholder="Filter voices by name, timbre, dialect..." autocomplete="off" />
         <select id="voiceSelect"></select>
       </div>
 
       <div class="preview-strip" id="voicePreviewStrip">
         <span>Selected voice status</span>
-        <span class="pill">—</span>
+        <span class="pill"> - </span>
       </div>
 
       <div class="clone-box" id="cloneBox">
-        <label class="field-label" for="refFileInput">Reference Clip for Voice Cloning (5–30s WAV/MP3)</label>
+        <label class="field-label" for="refFileInput" title="Upload a 5-30s WAV or MP3 containing clear, isolated speech without background music or noise.">
+          Reference Clip for Voice Cloning (5–30s WAV/MP3)
+        </label>
         <input type="file" id="refFileInput" accept="audio/*" />
         <small id="refStatus" style="color: var(--ink-muted); font-size: 0.76rem;">No reference clip uploaded.</small>
       </div>
 
       <div>
-        <label class="field-label">Voice Tuning &amp; Dramaticness</label>
+        <label class="field-label">Acoustic Parameters &amp; Emotion</label>
         <div class="controls-grid" id="controlsGrid"></div>
       </div>
     </section>
@@ -830,13 +997,18 @@
     <!-- Bottom Transcript Card -->
     <section class="card transcript-card">
       <div class="card-header">
-        <span class="card-title">Sentence Breakdown</span>
-        <span class="pill solid" id="perfPill" style="display:none;"></span>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="card-title">Sentence Breakdown</span>
+          <span class="pill solid" id="perfPill" style="display:none;"></span>
+        </div>
+        <div style="width: min(320px, 100%);">
+          <input type="text" class="search-input" id="chunkSearchInput" placeholder="Search sentences in transcript..." style="margin-bottom:0; padding:6px 10px;" />
+        </div>
       </div>
 
       <div class="chunks-list" id="chunksList">
-        <div style="color: var(--ink-muted); font-size: 0.84rem;">
-          Generate a readout to inspect sentences, jump to any line, or regenerate a single line.
+        <div style="color: var(--ink-muted); font-size: 0.84rem; padding: 6px 0;">
+          Generate a readout to inspect sentences, jump between lines, or regenerate a single sentence.
         </div>
       </div>
     </section>
@@ -853,60 +1025,72 @@
 
     <div class="player-center">
       <div class="player-transport">
-        <button class="icon-btn" id="prevChunkBtn" disabled title="Previous sentence" aria-label="Previous sentence">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M6 5h2v14H6V5zm3.5 7 9.5 6V6l-9.5 6z"/>
-          </svg>
+        <button class="transport-btn" id="prevChunkBtn" disabled title="Previous sentence / phrase (Up Arrow or J)" aria-label="Previous sentence">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6V5zm3.5 7 9.5 6V6l-9.5 6z"/></svg>
+          Sent
         </button>
-        <button class="icon-btn" id="skipBackBtn" disabled title="Back 10 seconds" aria-label="Back 10 seconds">-10s</button>
-        <button class="play-circle" id="playPauseBtn" disabled title="Play / Pause" aria-label="Play">
+        <button class="transport-btn" id="skipBackBtn" disabled title="Rewind 5 seconds (Left Arrow)" aria-label="Rewind 5 seconds">-5s</button>
+        <button class="play-circle" id="playPauseBtn" disabled title="Play / Pause (Space)" aria-label="Play">
           <svg id="playPauseIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M8 5.14v14l11-7-11-7z"/>
           </svg>
         </button>
-        <button class="icon-btn" id="skipFwdBtn" disabled title="Forward 10 seconds" aria-label="Forward 10 seconds">+10s</button>
-        <button class="icon-btn" id="nextChunkBtn" disabled title="Next sentence" aria-label="Next sentence">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M16 5h2v14h-2V5zm-1 7-9.5 6V6L15 12z"/>
-          </svg>
+        <button class="transport-btn" id="skipFwdBtn" disabled title="Fast-forward 5 seconds (Right Arrow)" aria-label="Fast forward 5 seconds">+5s</button>
+        <button class="transport-btn" id="nextChunkBtn" disabled title="Next sentence / phrase (Down Arrow or K)" aria-label="Next sentence">
+          Sent
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2V5zm-1 7-9.5 6V6L15 12z"/></svg>
         </button>
       </div>
 
-      <div class="scrubber-wrap">
-        <span class="time-label" id="curTimeLabel">0:00</span>
-        <input type="range" id="seekBar" min="0" max="100" step="0.05" value="0" disabled />
-        <span class="time-label right" id="durTimeLabel">0:00</span>
+      <div class="timeline-wrap">
+        <!-- Divided Sentence / Phrase Visual Segments -->
+        <div class="phrase-timeline" id="phraseTimeline" title="Timeline divided into sentence/phrase blocks. Click any phrase to seek immediately."></div>
+
+        <div class="scrubber-row">
+          <span class="time-label" id="curTimeLabel">0:00</span>
+          <input type="range" id="seekBar" min="0" max="100" step="0.05" value="0" disabled title="Scrub audio timeline" />
+          <span class="time-label right" id="durTimeLabel">0:00</span>
+        </div>
       </div>
     </div>
 
     <div class="player-actions">
-      <select id="playbackRate" style="width: auto; padding: 6px 10px; border-radius: 999px; font-size: 0.78rem;" title="Playback speed">
+      <select id="playbackRate" style="width: auto; padding: 6px 10px; border-radius: 999px; font-size: 0.78rem;" title="Playback speed multiplier">
         <option value="0.85">0.85x</option>
         <option value="1" selected>1.0x</option>
         <option value="1.15">1.15x</option>
         <option value="1.3">1.3x</option>
         <option value="1.5">1.5x</option>
       </select>
-      <button class="btn" id="regenAllBtn" disabled>Regenerate</button>
-      <a class="btn primary" id="downloadMp3Btn" href="#" download style="pointer-events:none; opacity:0.35;">Download MP3</a>
-      <a class="btn" id="downloadWavBtn" href="#" download style="pointer-events:none; opacity:0.35;">WAV</a>
+      <button class="btn" id="regenAllBtn" disabled title="Re-synthesize the entire readout with current tuning settings.">Regenerate</button>
+      <a class="btn primary" id="downloadMp3Btn" href="#" download style="pointer-events:none; opacity:0.35;" title="Download ready-to-share MP3">Download MP3</a>
+      <a class="btn" id="downloadWavBtn" href="#" download style="pointer-events:none; opacity:0.35;" title="Download uncompressed 24kHz float WAV">WAV</a>
     </div>
   </footer>
 
   <script>
     const SAMPLES = {
-      benchmark: `Welcome to your local English text-to-speech readout studio. Right now, your workstation is synthesizing roughly one full minute of spoken audio directly on local hardware, without relying on any paid cloud APIs or authentication tokens. Notice how natural the pacing sounds across longer paragraphs, technical explanations, and conversational transitions. Because the text is automatically segmented at sentence boundaries, your local hardware stays responsive and memory-efficient while generating each section cleanly. Once the readout finishes, you can pause at any moment, skip forward or backward ten seconds, jump straight to a specific sentence in the transcript below, tweak the dramaticness or speaking speed, regenerate a single line, or export the entire performance as a ready-to-share MP3 file.`,
-      dramatic: `Stop right there. Do you hear that faint hum beneath the floorboards? For twenty years, everyone in this valley swore the old observatory had been abandoned. Yet every single midnight, right before the storm rolls in over the ridge, the brass shutters grind open—and something inside begins to speak.`,
-      tags: `Oh, that's hilarious! [chuckle] Honestly, I didn't expect the local model to sound this expressive right out of the box. [sigh] Give me one second to catch my breath, and let's test a [joyful] celebratory readout next!`
+      benchmark: `Welcome to OmniVox, your local text-to-speech studio. Right now, your workstation is synthesizing spoken audio directly on local hardware, without relying on paid cloud APIs or authentication tokens. Notice how natural the pacing sounds across longer paragraphs, technical explanations, and conversational transitions. Because the text is automatically segmented at sentence boundaries, your local hardware stays responsive and memory-efficient while generating each section cleanly. Once the readout finishes, you can pause at any moment, skip forward or backward five seconds, jump straight to a specific sentence in the transcript below, tweak the dramaticness or speaking speed, regenerate a single line, or export the entire performance as a ready-to-share MP3 file.`,
+      dramatic: `Stop right there. Do you hear that faint hum beneath the floorboards? For twenty years, everyone in this valley swore the old observatory had been abandoned. Yet every single midnight, right before the storm rolls in over the ridge, the brass shutters grind open - and something inside begins to speak.`,
+      tags: `Oh, that's hilarious! [chuckle] Honestly, I didn't expect the local model to sound this expressive right out of the box. [sigh] Give me one second to catch my breath, and let's test a [joyful] celebratory readout next!`,
+      spanish: `Bienvenidos a OmniVox. Esta es una demostración de síntesis de voz neuronal ejecutándose completamente en su hardware local. Cada oración se procesa de forma independiente, lo que permite regenerar frases individuales y navegar con total precisión a través de la línea de tiempo.`,
+      french: `Bienvenue sur OmniVox. Voici une démonstration de synthèse vocale neuronale exécutée localement sur votre machine. La segmentation par phrase permet une grande réactivité et un contrôle précis de la vitesse et de l'intonation.`,
+      german: `Willkommen bei OmniVox. Dies ist eine Demonstration der neuronalen Sprachsynthese direkt auf Ihrer lokalen Hardware. Jeder Satz wird separat verarbeitet, was eine präzise Zeilennavigation und blitzschnelle Neuberechnung ermöglicht.`,
+      japanese: `OmniVoxへようこそ。これはローカル環境で動作するニューラル音声合成のデモです。文章ごとに細かく分割されているため、快適な再生と柔軟な再生成が可能です。`,
+      chinese: `欢迎使用OmniVox语音合成工作室。这是完全运行在本地硬件上的神经语音合成演示。系统按句子对长文本进行分块，不仅保证了推理速度，还能让您精确跳转和重生成任意单句。`
     };
 
     const state = {
       engines: [],
       selectedEngine: null,
+      selectedLang: "all",
+      voiceSearchQuery: "",
+      chunkSearchQuery: "",
       paramValues: {},
       referenceId: null,
       session: null,
       activeJobId: null,
+      jobStartTime: 0,
       pollTimer: null,
     };
 
@@ -917,6 +1101,8 @@
     const voiceSelect = el("voiceSelect");
     const voiceCountLabel = el("voiceCountLabel");
     const voicePreviewStrip = el("voicePreviewStrip");
+    const voiceSearchInput = el("voiceSearchInput");
+    const langFilterBar = el("langFilterBar");
     const engineDesc = el("engineDesc");
     const repoBadge = el("repoBadge");
     const controlsGrid = el("controlsGrid");
@@ -928,6 +1114,11 @@
     const cancelBtn = el("cancelBtn");
     const autoPlayToggle = el("autoPlayToggle");
     const statusBar = el("statusBar");
+    const progressBox = el("progressBox");
+    const progressStep = el("progressStep");
+    const progressStats = el("progressStats");
+    const progressFill = el("progressFill");
+    const progressText = el("progressText");
 
     const audio = el("audioPlayer");
     const playPauseBtn = el("playPauseBtn");
@@ -938,6 +1129,7 @@
     const nextChunkBtn = el("nextChunkBtn");
     const skipBackBtn = el("skipBackBtn");
     const skipFwdBtn = el("skipFwdBtn");
+    const phraseTimeline = el("phraseTimeline");
     const seekBar = el("seekBar");
     const curTimeLabel = el("curTimeLabel");
     const durTimeLabel = el("durTimeLabel");
@@ -947,6 +1139,7 @@
     const downloadWavBtn = el("downloadWavBtn");
     const perfPill = el("perfPill");
     const chunksList = el("chunksList");
+    const chunkSearchInput = el("chunkSearchInput");
 
     function fmtTime(sec) {
       if (!isFinite(sec) || sec < 0) sec = 0;
@@ -976,32 +1169,36 @@
       const prevEngineId = preserveSelection && state.selectedEngine ? state.selectedEngine.id : null;
       const prevVoiceId = preserveSelection ? voiceSelect.value : null;
 
-      const res = await fetch("/api/status");
-      const data = await res.json();
+      try {
+        const res = await fetch("/api/status");
+        const data = await res.json();
 
-      const sys = data.system;
-      const badges = [];
-      if (sys.cuda_available) {
-        badges.push(`<span class="pill solid">${sys.gpu_name} · ${sys.vram_free_gb}/${sys.vram_total_gb} GB VRAM free</span>`);
-      } else {
-        badges.push(`<span class="pill outline">CPU Mode</span>`);
-      }
-      badges.push(
-        sys.ffmpeg_available
-          ? `<span class="pill">MP3 Export Ready</span>`
-          : `<span class="pill outline">WAV Only</span>`
-      );
-      el("sysBadges").innerHTML = badges.join("");
+        const sys = data.system;
+        const badges = [];
+        if (sys.cuda_available) {
+          badges.push(`<span class="pill solid" title="GPU Acceleration active">${sys.gpu_name} · ${sys.vram_free_gb}/${sys.vram_total_gb} GB free</span>`);
+        } else {
+          badges.push(`<span class="pill outline" title="Running in CPU-only mode">CPU Mode</span>`);
+        }
+        badges.push(
+          sys.ffmpeg_available
+            ? `<span class="pill" title="ffmpeg is detected: Automatic MP3 encoding enabled">MP3 Ready</span>`
+            : `<span class="pill outline" title="Install ffmpeg to enable MP3 conversion">WAV Only</span>`
+        );
+        el("sysBadges").innerHTML = badges.join("");
 
-      state.engines = data.engines;
-      const targetEngine =
-        (prevEngineId && state.engines.find((e) => e.id === prevEngineId)) ||
-        state.engines.find((e) => e.available && e.installed) ||
-        state.engines.find((e) => e.available) ||
-        state.engines[0];
+        state.engines = data.engines;
+        const targetEngine =
+          (prevEngineId && state.engines.find((e) => e.id === prevEngineId)) ||
+          state.engines.find((e) => e.available && e.installed) ||
+          state.engines.find((e) => e.available) ||
+          state.engines[0];
 
-      if (targetEngine) {
-        selectEngine(targetEngine.id, prevVoiceId);
+        if (targetEngine) {
+          selectEngine(targetEngine.id, prevVoiceId);
+        }
+      } catch (err) {
+        setStatus("Could not connect to OmniVox backend. Please ensure the server is running at 127.0.0.1:7860.", true);
       }
     }
 
@@ -1023,7 +1220,7 @@
           ? (eng.size_summary || "Installed").replace("Installed · ", "").replace("Ready · ", "")
           : estMb > 0
             ? `~${estMb >= 1024 ? (estMb / 1024).toFixed(1) + " GB" : estMb + " MB"}`
-            : "—";
+            : " - ";
 
         row.innerHTML = `
           <div>
@@ -1040,6 +1237,63 @@
       }
     }
 
+    function getFilteredVoices() {
+      if (!state.selectedEngine) return [];
+      const voices = state.selectedEngine.voices;
+      const lang = state.selectedLang;
+      const q = state.voiceSearchQuery.trim().toLowerCase();
+
+      return voices.filter((v) => {
+        // Language filter
+        if (lang !== "all") {
+          const vLang = (v.lang || "en").toLowerCase();
+          if (lang === "other") {
+            if (["en", "es", "fr", "de", "it", "pt", "ja", "zh"].includes(vLang)) return false;
+          } else if (vLang !== lang && vLang !== "multilingual") {
+            return false;
+          }
+        }
+        // Text search filter
+        if (q) {
+          const matchLabel = (v.label || "").toLowerCase().includes(q);
+          const matchId = (v.id || "").toLowerCase().includes(q);
+          const matchLangName = (v.lang_name || "").toLowerCase().includes(q);
+          if (!matchLabel && !matchId && !matchLangName) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderVoiceDropdown(preferredVoiceId = null) {
+      if (!state.selectedEngine) return;
+      const filtered = getFilteredVoices();
+      const totalCount = state.selectedEngine.voices.length;
+      const readyCount = state.selectedEngine.voices.filter((v) => Boolean(v.installed)).length;
+
+      voiceCountLabel.textContent = `${filtered.length} of ${totalCount} voices (${readyCount} ready)`;
+
+      voiceSelect.innerHTML = "";
+      if (filtered.length === 0) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No matching voices found";
+        voiceSelect.appendChild(opt);
+        voiceSelect.disabled = true;
+      } else {
+        voiceSelect.disabled = false;
+        for (const v of filtered) {
+          const opt = document.createElement("option");
+          opt.value = v.id;
+          opt.textContent = v.size_label ? `${v.label} -  ${v.size_label}` : v.label;
+          voiceSelect.appendChild(opt);
+        }
+        if (preferredVoiceId && filtered.some((v) => v.id === preferredVoiceId)) {
+          voiceSelect.value = preferredVoiceId;
+        }
+      }
+      updateVoicePreview();
+    }
+
     function selectEngine(engineId, preferredVoiceId = null) {
       const eng = state.engines.find((e) => e.id === engineId);
       if (!eng) return;
@@ -1051,22 +1305,7 @@
       repoBadge.textContent = eng.repo;
       engineDesc.textContent = eng.size_summary ? `${eng.description} (${eng.size_summary})` : eng.description;
 
-      // Voices with installed + size preview
-      voiceSelect.innerHTML = "";
-      const installedCount = eng.voices.filter((v) => Boolean(v.installed)).length;
-      voiceCountLabel.textContent = `${installedCount}/${eng.voices.length} ready`;
-
-      for (const v of eng.voices) {
-        const opt = document.createElement("option");
-        opt.value = v.id;
-        opt.textContent = v.size_label ? `${v.label} — ${v.size_label}` : v.label;
-        voiceSelect.appendChild(opt);
-      }
-
-      if (preferredVoiceId && eng.voices.some((v) => v.id === preferredVoiceId)) {
-        voiceSelect.value = preferredVoiceId;
-      }
-      updateVoicePreview();
+      renderVoiceDropdown(preferredVoiceId);
 
       cloneBox.className = eng.supports_cloning ? "clone-box visible" : "clone-box";
 
@@ -1078,6 +1317,7 @@
           b.type = "button";
           b.className = "seg-btn";
           b.textContent = tag;
+          b.title = `Click to insert ${tag} into the script at cursor position`;
           b.onclick = () => insertTagAtCursor(tag);
           tagBar.appendChild(b);
         }
@@ -1085,7 +1325,7 @@
         tagBar.className = "tag-bar";
       }
 
-      // Dynamic tuning controls
+      // Dynamic tuning controls with detailed parameter tooltips
       controlsGrid.innerHTML = "";
       for (const ctrl of eng.controls) {
         state.paramValues[ctrl.key] = ctrl.default;
@@ -1095,10 +1335,10 @@
         if (ctrl.type === "range") {
           wrap.innerHTML = `
             <div class="control-head">
-              <span>${ctrl.label}</span>
+              <span title="${ctrl.hint || ''}">${ctrl.label}</span>
               <span class="control-val" id="val_${ctrl.key}">${ctrl.default}</span>
             </div>
-            <input type="range" id="ctrl_${ctrl.key}" min="${ctrl.min}" max="${ctrl.max}" step="${ctrl.step}" value="${ctrl.default}" />
+            <input type="range" id="ctrl_${ctrl.key}" min="${ctrl.min}" max="${ctrl.max}" step="${ctrl.step}" value="${ctrl.default}" title="${ctrl.hint || ''}" />
             <div class="control-hint">${ctrl.hint || ""}</div>
           `;
           controlsGrid.appendChild(wrap);
@@ -1113,8 +1353,8 @@
             .map((o) => `<option value="${o.id}">${o.label}</option>`)
             .join("");
           wrap.innerHTML = `
-            <div class="control-head"><span>${ctrl.label}</span></div>
-            <select id="ctrl_${ctrl.key}">${optsHtml}</select>
+            <div class="control-head"><span title="${ctrl.hint || ''}">${ctrl.label}</span></div>
+            <select id="ctrl_${ctrl.key}" title="${ctrl.hint || ''}">${optsHtml}</select>
             <div class="control-hint">${ctrl.hint || ""}</div>
           `;
           controlsGrid.appendChild(wrap);
@@ -1129,15 +1369,18 @@
 
     function updateVoicePreview() {
       const eng = state.selectedEngine;
-      if (!eng) return;
+      if (!eng || !voiceSelect.value) {
+        voicePreviewStrip.innerHTML = `<span>Select a voice</span><span class="pill"> - </span>`;
+        return;
+      }
       const v = eng.voices.find((item) => item.id === voiceSelect.value);
       if (!v) return;
       const isInstalled = Boolean(v.installed);
       const pillClass = isInstalled ? "pill solid" : "pill outline";
       const msg = isInstalled
-        ? `Ready on disk (${eng.name})`
-        : `Downloads automatically on first generate`;
-      const sizeLabel = v.size_label || (isInstalled ? "Installed" : "Size unknown");
+        ? `Ready on disk (${v.lang_name || 'Neural Voice'})`
+        : `Downloads automatically on first generate (~${v.size_label || 'cache'})`;
+      const sizeLabel = v.size_label || (isInstalled ? "Installed" : "Needs download");
       voicePreviewStrip.innerHTML = `
         <span>${msg}</span>
         <span class="${pillClass}">${sizeLabel}</span>
@@ -1155,6 +1398,24 @@
       scriptInput.focus();
       updateWordStats();
     }
+
+    // Language pills filter handler
+    langFilterBar.addEventListener("click", (e) => {
+      const pill = e.target.closest(".lang-pill");
+      if (!pill) return;
+      for (const btn of langFilterBar.querySelectorAll(".lang-pill")) {
+        btn.classList.remove("active");
+      }
+      pill.classList.add("active");
+      state.selectedLang = pill.dataset.lang;
+      renderVoiceDropdown();
+    });
+
+    // Voice search handler
+    voiceSearchInput.addEventListener("input", () => {
+      state.voiceSearchQuery = voiceSearchInput.value;
+      renderVoiceDropdown();
+    });
 
     refFileInput.addEventListener("change", async () => {
       const file = refFileInput.files?.[0];
@@ -1182,17 +1443,28 @@
     async function startGenerate() {
       const text = scriptInput.value.trim();
       if (!text) {
-        setStatus("Please paste or enter some English text first.", true);
+        setStatus("Please paste or enter some script text first.", true);
         return;
       }
       if (!state.selectedEngine) return;
+      if (!voiceSelect.value) {
+        setStatus("Please select a voice first.", true);
+        return;
+      }
 
       generateBtn.disabled = true;
       regenAllBtn.disabled = true;
       cancelBtn.style.display = "inline-flex";
       cancelBtn.disabled = false;
       cancelBtn.textContent = "Cancel";
-      setStatus(`Starting ${state.selectedEngine.name}...`);
+      setStatus("");
+
+      progressBox.className = "progress-box visible";
+      progressFill.style.width = "4%";
+      progressStep.textContent = `Initializing ${state.selectedEngine.name}...`;
+      progressStats.textContent = "0% · 0s elapsed";
+      progressText.textContent = "Segmenting script into sentence chunks...";
+      state.jobStartTime = performance.now();
 
       try {
         const res = await fetch("/api/generate", {
@@ -1212,12 +1484,10 @@
         pollJob(data.job_id);
       } catch (err) {
         const msg = err.message === "Failed to fetch"
-          ? "Failed to fetch: OmniVox server at 127.0.0.1:7860 is not reachable. Run start_studio.bat to start it."
+          ? "Failed to fetch: OmniVox server at 127.0.0.1:7860 is not reachable."
           : err.message;
         setStatus(msg, true);
-        generateBtn.disabled = false;
-        regenAllBtn.disabled = !state.session;
-        cancelBtn.style.display = "none";
+        finishJobUi();
       }
     }
 
@@ -1225,7 +1495,7 @@
       if (!state.activeJobId) return;
       cancelBtn.disabled = true;
       cancelBtn.textContent = "Cancelling...";
-      setStatus("Cancelling generation after current line...");
+      progressStep.textContent = "Cancelling synthesis...";
       try {
         await fetch(`/api/jobs/${state.activeJobId}/cancel`, { method: "POST" });
       } catch (err) {
@@ -1244,6 +1514,7 @@
       cancelBtn.style.display = "none";
       cancelBtn.disabled = false;
       cancelBtn.textContent = "Cancel";
+      progressBox.className = "progress-box";
     }
 
     function pollJob(jobId) {
@@ -1253,15 +1524,24 @@
           const res = await fetch(`/api/jobs/${jobId}`);
           if (!res.ok) throw new Error(`Job status returned ${res.status}`);
           const job = await res.json();
+          const elapsedSec = ((performance.now() - state.jobStartTime) / 1000).toFixed(1);
+
           if (job.status === "running" || job.status === "queued") {
             if (job.cancelling) {
-              setStatus("Cancelling after current line finishes...");
+              progressStep.textContent = "Cancelling after current sentence...";
             } else if (job.total_chunks > 0) {
-              setStatus(
-                `Synthesizing line ${job.current_chunk} / ${job.total_chunks}: "${job.current_text.slice(0, 72)}${job.current_text.length > 72 ? "..." : ""}"`
-              );
+              const pct = Math.round((job.current_chunk / job.total_chunks) * 100);
+              progressFill.style.width = `${Math.max(8, pct)}%`;
+              progressStep.textContent = `Synthesizing sentence ${job.current_chunk} of ${job.total_chunks}`;
+              progressStats.textContent = `${pct}% · ${elapsedSec}s elapsed`;
+              progressText.textContent = `"${job.current_text}"`;
+            } else {
+              progressStep.textContent = `Loading ${state.selectedEngine?.name || 'model'} into memory...`;
+              progressStats.textContent = `0% · ${elapsedSec}s elapsed`;
             }
           } else if (job.status === "done") {
+            progressFill.style.width = "100%";
+            progressStats.textContent = `100% · ${elapsedSec}s`;
             finishJobUi();
             setStatus("");
             applySession(job.result, autoPlayToggle.checked);
@@ -1277,7 +1557,7 @@
           finishJobUi();
           setStatus(`Polling error: ${err.message}`, true);
         }
-      }, 1000);
+      }, 700);
     }
 
     function applySession(session, shouldAutoPlay = false, seekAfterLoad = 0) {
@@ -1317,43 +1597,105 @@
       downloadWavBtn.style.opacity = "1";
 
       perfPill.style.display = "inline-flex";
-      perfPill.textContent = `${session.audio_duration_sec}s generated in ${session.generation_time_sec}s (${session.speedup_x}x)`;
+      perfPill.textContent = `${session.audio_duration_sec}s spoken in ${session.generation_time_sec}s (${session.speedup_x}x real-time)`;
 
       const engName = state.engines.find((e) => e.id === session.engine_id)?.name || session.engine_id;
       nowPlayingTitle.textContent = `${session.voice} · ${engName}`;
-      nowPlayingSub.textContent = `${session.audio_duration_sec}s readout · ${session.chunks.length} lines`;
+      updateNowPlayingSub();
 
+      renderPhraseTimeline();
       renderChunks();
+    }
+
+    function updateNowPlayingSub() {
+      if (!state.session) return;
+      const idx = getActiveChunkIndex();
+      const total = state.session.chunks.length;
+      const cur = audio.currentTime || 0;
+      const dur = audio.duration || state.session.audio_duration_sec || 0;
+      const sentText = idx >= 0 && idx < total ? `Sentence ${idx + 1}/${total}` : "Finished";
+      nowPlayingSub.textContent = `${sentText} · ${fmtTime(cur)} / ${fmtTime(dur)}`;
+    }
+
+    function renderPhraseTimeline() {
+      if (!state.session || !state.session.chunks.length) {
+        phraseTimeline.innerHTML = "";
+        return;
+      }
+      const totalDur = state.session.audio_duration_sec || 1;
+      phraseTimeline.innerHTML = "";
+
+      for (const ch of state.session.chunks) {
+        const seg = document.createElement("div");
+        seg.className = "phrase-segment";
+        const pct = Math.max(0.5, ((ch.duration_sec || (ch.end_sec - ch.start_sec)) / totalDur) * 100);
+        seg.style.width = `${pct}%`;
+        seg.dataset.index = ch.index;
+        seg.title = `Sentence ${ch.index + 1} (${fmtTime(ch.start_sec)} - ${fmtTime(ch.end_sec)}): "${ch.text.slice(0, 70)}..."`;
+        seg.addEventListener("click", () => {
+          audio.currentTime = ch.start_sec;
+          audio.play().catch(() => {});
+        });
+        phraseTimeline.appendChild(seg);
+      }
+      highlightActiveChunk();
     }
 
     function renderChunks() {
       if (!state.session) return;
       chunksList.innerHTML = "";
+      const q = state.chunkSearchQuery.trim().toLowerCase();
+
       for (const ch of state.session.chunks) {
+        if (q && !ch.text.toLowerCase().includes(q)) {
+          continue;
+        }
         const row = document.createElement("div");
         row.className = "chunk-row";
         row.dataset.index = ch.index;
+        row.title = `Click to play sentence ${ch.index + 1}`;
+
         row.innerHTML = `
-          <span class="chunk-time">${fmtTime(ch.start_sec)}</span>
+          <span class="chunk-num">${String(ch.index + 1).padStart(2, "0")}</span>
+          <span class="chunk-time">${fmtTime(ch.start_sec)} → ${fmtTime(ch.end_sec)}</span>
           <span class="chunk-text"></span>
-          <button class="btn chunk-regen" type="button">Regen</button>
+          <button class="btn chunk-btn chunk-play" type="button" title="Play sentence ${ch.index + 1}">Play</button>
+          <button class="btn chunk-btn chunk-regen" type="button" title="Regenerate only this sentence">Regen</button>
         `;
+
         row.querySelector(".chunk-text").textContent = ch.text;
+
         row.addEventListener("click", (e) => {
           if (e.target.closest(".chunk-regen")) return;
           audio.currentTime = ch.start_sec;
           audio.play().catch(() => {});
         });
-        row.querySelector(".chunk-regen").addEventListener("click", () => regenerateSingleChunk(ch.index));
+
+        row.querySelector(".chunk-play").addEventListener("click", (e) => {
+          e.stopPropagation();
+          audio.currentTime = ch.start_sec;
+          audio.play().catch(() => {});
+        });
+
+        row.querySelector(".chunk-regen").addEventListener("click", (e) => {
+          e.stopPropagation();
+          regenerateSingleChunk(ch.index);
+        });
+
         chunksList.appendChild(row);
       }
       highlightActiveChunk();
     }
 
+    chunkSearchInput.addEventListener("input", () => {
+      state.chunkSearchQuery = chunkSearchInput.value;
+      renderChunks();
+    });
+
     async function regenerateSingleChunk(idx) {
       if (!state.session) return;
       const resumeAt = state.session.chunks[idx]?.start_sec || 0;
-      setStatus(`Regenerating line ${idx + 1}...`);
+      setStatus(`Regenerating sentence ${idx + 1}...`);
       try {
         const res = await fetch(`/api/sessions/${state.session.session_id}/chunks/${idx}/regenerate`, {
           method: "POST",
@@ -1380,10 +1722,17 @@
 
     function highlightActiveChunk() {
       const idx = getActiveChunkIndex();
+      // Highlight row in list
       for (const row of chunksList.querySelectorAll(".chunk-row")) {
         const isCurrent = Number(row.dataset.index) === idx;
         row.classList.toggle("active", isCurrent);
       }
+      // Highlight segment on phrase timeline
+      for (const seg of phraseTimeline.querySelectorAll(".phrase-segment")) {
+        const isCurrent = Number(seg.dataset.index) === idx;
+        seg.classList.toggle("active", isCurrent);
+      }
+      updateNowPlayingSub();
     }
 
     function updateTimeDisplay() {
@@ -1417,26 +1766,65 @@
       updateTimeDisplay();
     });
 
+    // 5-second skips (more responsive for speech sentences)
     skipBackBtn.addEventListener("click", () => {
-      audio.currentTime = Math.max(0, audio.currentTime - 10);
+      audio.currentTime = Math.max(0, audio.currentTime - 5);
     });
     skipFwdBtn.addEventListener("click", () => {
-      audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
+      audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
     });
 
+    // Phrase / sentence jumping
     prevChunkBtn.addEventListener("click", () => {
       if (!state.session) return;
-      const idx = Math.max(0, getActiveChunkIndex() - 1);
-      audio.currentTime = state.session.chunks[idx].start_sec;
+      const currentIdx = getActiveChunkIndex();
+      // If we are more than 1.2s into the current chunk, jump to start of current chunk; else previous
+      const currentChunk = state.session.chunks[currentIdx];
+      let targetIdx = currentIdx;
+      if (currentChunk && audio.currentTime > currentChunk.start_sec + 1.2) {
+        targetIdx = currentIdx;
+      } else {
+        targetIdx = Math.max(0, currentIdx - 1);
+      }
+      audio.currentTime = state.session.chunks[targetIdx].start_sec;
+      audio.play().catch(() => {});
     });
+
     nextChunkBtn.addEventListener("click", () => {
       if (!state.session) return;
-      const idx = Math.min(state.session.chunks.length - 1, getActiveChunkIndex() + 1);
-      audio.currentTime = state.session.chunks[idx].start_sec;
+      const currentIdx = getActiveChunkIndex();
+      const targetIdx = Math.min(state.session.chunks.length - 1, currentIdx + 1);
+      audio.currentTime = state.session.chunks[targetIdx].start_sec;
+      audio.play().catch(() => {});
     });
 
     playbackRate.addEventListener("change", () => {
       audio.playbackRate = parseFloat(playbackRate.value);
+    });
+
+    // Keyboard navigation shortcuts
+    window.addEventListener("keydown", (e) => {
+      const activeEl = document.activeElement;
+      const isInput = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA" || activeEl.tagName === "SELECT");
+      if (isInput) return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (audio.paused) audio.play().catch(() => {});
+        else audio.pause();
+      } else if (e.code === "ArrowLeft") {
+        e.preventDefault();
+        audio.currentTime = Math.max(0, audio.currentTime - 5);
+      } else if (e.code === "ArrowRight") {
+        e.preventDefault();
+        audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+      } else if (e.code === "ArrowUp" || e.code === "KeyJ") {
+        e.preventDefault();
+        prevChunkBtn.click();
+      } else if (e.code === "ArrowDown" || e.code === "KeyK") {
+        e.preventDefault();
+        nextChunkBtn.click();
+      }
     });
 
     generateBtn.addEventListener("click", startGenerate);
